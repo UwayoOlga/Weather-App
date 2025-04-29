@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+    @apply bg-no-repeat bg-cover; /* Apply other Tailwind background properties */
+    background-image: url('assets/Frame1.svg'); /* Your SVG path */
+  }
+
+@layer utilities {
+  .div1 {
+    background-image: url('s');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+}
