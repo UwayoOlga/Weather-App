@@ -37,20 +37,27 @@ function renderFavorites() {
   favoritesEl.innerHTML = '';
   
   if (favs.length === 0) {
-    favoritesEl.innerHTML = '<li class="text-white/70 text-center py-4">No favorites yet</li>';
+    favoritesEl.innerHTML = `
+      <li class="text-white/70 text-center py-8">
+        <div class="text-4xl mb-3">🌟</div>
+        <p class="font-light">No favorites yet</p>
+        <p class="text-sm text-white/50 mt-1">Save cities you love</p>
+      </li>
+    `;
     return;
   }
   
   favs.forEach((f, i) => {
     const li = document.createElement('li');
-    li.className = 'bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20 hover:bg-white/20 transition-all duration-200';
+    li.className = 'glass-card rounded-xl p-4 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group slide-in';
+    li.style.animationDelay = `${i * 0.1}s`;
     
     const btn = document.createElement('button');
-    btn.className = 'text-left w-full';
+    btn.className = 'text-left w-full group-hover:text-white/90 transition-colors duration-300';
     btn.onclick = () => loadWeather(f.latitude, f.longitude, f.name);
     
     const nameDiv = document.createElement('div');
-    nameDiv.className = 'text-white font-medium text-sm truncate';
+    nameDiv.className = 'text-white font-semibold text-sm truncate mb-1';
     nameDiv.textContent = f.name;
     
     const coordsDiv = document.createElement('div');
@@ -61,7 +68,7 @@ function renderFavorites() {
     btn.appendChild(coordsDiv);
     
     const rm = document.createElement('button');
-    rm.className = 'mt-2 px-3 py-1 bg-red-500/20 text-red-300 text-xs rounded-lg hover:bg-red-500/30 transition-colors duration-200';
+    rm.className = 'mt-3 px-3 py-1 bg-red-500/20 backdrop-blur-sm text-red-300 text-xs rounded-lg hover:bg-red-500/30 transition-all duration-300 border border-red-400/30';
     rm.textContent = '🗑️ Remove';
     rm.onclick = (e) => {
       e.stopPropagation();
@@ -100,9 +107,15 @@ function renderSuggestions(places) {
     return;
   }
   suggestionsEl.classList.remove('hidden');
+  suggestionsEl.classList.add('slide-in');
+  
   places.forEach((p, index) => {
     const li = document.createElement('li');
-    li.className = 'px-4 py-3 hover:bg-white/20 cursor-pointer transition-colors duration-200 border-b border-white/10 last:border-b-0';
+    li.className = 'px-6 py-4 hover:bg-white/10 cursor-pointer transition-all duration-300 border-b border-white/10 last:border-b-0 group';
+    li.style.animationDelay = `${index * 0.1}s`;
+    li.style.opacity = '0';
+    li.style.transform = 'translateY(10px)';
+    
     const name = `${p.name}${p.admin1 ? ', ' + p.admin1 : ''}${p.country ? ', ' + p.country : ''}`;
     
     const content = document.createElement('div');
@@ -112,28 +125,28 @@ function renderSuggestions(places) {
     left.className = 'flex-1 min-w-0';
     
     const nameSpan = document.createElement('div');
-    nameSpan.className = 'text-gray-800 font-medium truncate';
+    nameSpan.className = 'text-white font-semibold text-lg truncate group-hover:text-white/90 transition-colors duration-300';
     nameSpan.textContent = name;
     
     const coordsSpan = document.createElement('div');
-    coordsSpan.className = 'text-gray-500 text-sm';
+    coordsSpan.className = 'text-white/60 text-sm mt-1';
     coordsSpan.textContent = `${p.latitude.toFixed(2)}, ${p.longitude.toFixed(2)}`;
     
     left.appendChild(nameSpan);
     left.appendChild(coordsSpan);
     
     const addBtn = document.createElement('button');
-    addBtn.className = 'px-3 py-1 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors duration-200 flex-shrink-0 ml-3';
+    addBtn.className = 'px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm rounded-xl hover:bg-white/30 transition-all duration-300 flex-shrink-0 ml-4 transform hover:scale-105 border border-white/20';
     addBtn.textContent = '⭐ Save';
     addBtn.onclick = (e) => {
       e.stopPropagation();
       addFavorite({ name, latitude: p.latitude, longitude: p.longitude });
       addBtn.textContent = '✓ Saved';
-      addBtn.className = 'px-3 py-1 bg-green-500 text-white text-sm rounded-lg flex-shrink-0 ml-3';
+      addBtn.className = 'px-4 py-2 bg-green-500/30 backdrop-blur-sm text-white text-sm rounded-xl flex-shrink-0 ml-4 border border-green-400/50';
       setTimeout(() => {
         addBtn.textContent = '⭐ Save';
-        addBtn.className = 'px-3 py-1 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors duration-200 flex-shrink-0 ml-3';
-      }, 1500);
+        addBtn.className = 'px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm rounded-xl hover:bg-white/30 transition-all duration-300 flex-shrink-0 ml-4 transform hover:scale-105 border border-white/20';
+      }, 2000);
     };
     
     content.appendChild(left);
@@ -147,6 +160,12 @@ function renderSuggestions(places) {
     };
     
     suggestionsEl.appendChild(li);
+    
+    // Animate in
+    setTimeout(() => {
+      li.style.opacity = '1';
+      li.style.transform = 'translateY(0)';
+    }, index * 100);
   });
 }
 
@@ -200,29 +219,33 @@ function codeToEmoji(code) {
 function renderCurrent(name, data) {
   const c = data.current;
   currentEl.innerHTML = `
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center justify-between mb-12 slide-in">
       <div>
-        <div class="text-3xl font-bold text-white mb-2">${name || 'Selected location'}</div>
-        <div class="text-white/70">${new Date(c.time).toLocaleString()}</div>
+        <div class="text-4xl font-bold text-white mb-3 gradient-text">${name || 'Selected location'}</div>
+        <div class="text-white/80 text-lg font-light">${new Date(c.time).toLocaleString()}</div>
       </div>
-      <div class="text-8xl">${codeToEmoji(c.weather_code)}</div>
+      <div class="text-9xl weather-icon floating-animation">${codeToEmoji(c.weather_code)}</div>
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-        <div class="text-white/70 text-sm mb-2">Temperature</div>
-        <div class="text-3xl font-bold text-white">${c.temperature_2m}°C</div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
+        <div class="text-white/70 text-sm mb-3 font-medium">Temperature</div>
+        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.temperature_2m}°C</div>
+        <div class="text-white/50 text-xs mt-2">Current</div>
       </div>
-      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-        <div class="text-white/70 text-sm mb-2">Feels like</div>
-        <div class="text-3xl font-bold text-white">${c.apparent_temperature}°C</div>
+      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
+        <div class="text-white/70 text-sm mb-3 font-medium">Feels like</div>
+        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.apparent_temperature}°C</div>
+        <div class="text-white/50 text-xs mt-2">Perceived</div>
       </div>
-      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-        <div class="text-white/70 text-sm mb-2">Humidity</div>
-        <div class="text-3xl font-bold text-white">${c.relative_humidity_2m}%</div>
+      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
+        <div class="text-white/70 text-sm mb-3 font-medium">Humidity</div>
+        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.relative_humidity_2m}%</div>
+        <div class="text-white/50 text-xs mt-2">Moisture</div>
       </div>
-      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-        <div class="text-white/70 text-sm mb-2">Wind</div>
-        <div class="text-3xl font-bold text-white">${c.wind_speed_10m} km/h</div>
+      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
+        <div class="text-white/70 text-sm mb-3 font-medium">Wind</div>
+        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.wind_speed_10m} km/h</div>
+        <div class="text-white/50 text-xs mt-2">Speed</div>
       </div>
     </div>
   `;
@@ -238,19 +261,23 @@ function renderForecast(data) {
     pop: d.precipitation_probability_max[i],
   }));
   forecastEl.innerHTML = `
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-white">5-Day Forecast</h2>
+    <div class="flex items-center justify-between mb-8 slide-in">
+      <h2 class="text-3xl font-bold text-white gradient-text">5-Day Forecast</h2>
+      <div class="text-white/60 text-sm">Detailed outlook</div>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
       ${days
         .slice(0, 5)
         .map(
-          (x) => `
-        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 text-center hover:bg-white/20 transition-all duration-200">
-          <div class="text-white/70 text-sm mb-2">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
-          <div class="text-4xl mb-3">${codeToEmoji(x.code)}</div>
-          <div class="text-white font-semibold mb-1">${Math.round(x.tmin)}° / ${Math.round(x.tmax)}°</div>
-          <div class="text-white/60 text-xs">${x.pop ?? 0}% chance</div>
+          (x, index) => `
+        <div class="glass-card rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group slide-in" style="animation-delay: ${index * 0.1}s">
+          <div class="text-white/70 text-sm mb-3 font-medium">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
+          <div class="text-5xl mb-4 weather-icon group-hover:scale-110 transition-transform duration-300">${codeToEmoji(x.code)}</div>
+          <div class="text-white font-bold text-lg mb-2">${Math.round(x.tmin)}° / ${Math.round(x.tmax)}°</div>
+          <div class="text-white/60 text-sm">${x.pop ?? 0}% chance</div>
+          <div class="mt-3 h-1 bg-white/20 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-blue-400 to-purple-500 rounded-full" style="width: ${x.pop ?? 0}%"></div>
+          </div>
         </div>`
         )
         .join('')}
@@ -260,9 +287,10 @@ function renderForecast(data) {
 
 async function loadWeather(lat, lon, name) {
   currentEl.innerHTML = `
-    <div class="text-center py-12">
-      <div class="text-6xl mb-4 animate-spin">🌪️</div>
-      <div class="text-white/70 text-xl">Loading weather data...</div>
+    <div class="text-center py-16">
+      <div class="text-8xl mb-6 pulse-animation">🌪️</div>
+      <div class="text-white/80 text-2xl font-light mb-2">Loading weather data...</div>
+      <div class="text-white/60">Fetching the latest forecast</div>
     </div>
   `;
   forecastEl.innerHTML = '';
@@ -273,10 +301,10 @@ async function loadWeather(lat, lon, name) {
   } catch (e) {
     console.error(e);
     currentEl.innerHTML = `
-      <div class="text-center py-12">
-        <div class="text-6xl mb-4">❌</div>
-        <div class="text-red-300 text-xl">Failed to load weather data</div>
-        <div class="text-white/60 mt-2">Please try again later</div>
+      <div class="text-center py-16">
+        <div class="text-8xl mb-6">❌</div>
+        <div class="text-red-300 text-2xl font-light mb-2">Failed to load weather data</div>
+        <div class="text-white/60">Please check your connection and try again</div>
       </div>
     `;
   }
@@ -312,13 +340,13 @@ if (header) {
   if (buttonContainer) {
     const toggle = document.createElement('button');
     toggle.id = 'btn-theme';
-    toggle.className = 'px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-200 border border-white/20';
-    toggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+    toggle.className = 'group px-6 py-3 glass-card text-white rounded-2xl hover:bg-white/20 transition-all duration-300 transform hover:scale-105 flex items-center gap-3';
+    toggle.innerHTML = `<span class="text-xl group-hover:animate-pulse">${isDark ? '☀️' : '🌙'}</span><span class="font-medium">${isDark ? 'Light' : 'Dark'}</span>`;
     toggle.onclick = () => {
       isDark = !isDark;
       localStorage.setItem(DARK_KEY, isDark ? '1' : '0');
       applyTheme();
-      toggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+      toggle.innerHTML = `<span class="text-xl group-hover:animate-pulse">${isDark ? '☀️' : '🌙'}</span><span class="font-medium">${isDark ? 'Light' : 'Dark'}</span>`;
     };
     buttonContainer.appendChild(toggle);
   }
