@@ -3,11 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
   <link href="src/output.css" rel="stylesheet">
 </head>
-<body class="h-screen w-full">
- <div class="bg-[url('src/assets/Frame2.svg')] div1 border-gray-300 border-5 m-8 p-4 w-[104rem] h-[64rem]">
+<body class="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500">
+  <div class="min-h-screen bg-black/20 backdrop-blur-sm">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+      <!-- Header -->
+      <header class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="text-4xl font-bold text-white mb-2">Weather</h1>
+          <p class="text-white/80">Check weather anywhere in the world</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="btn-locate" class="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all duration-200 border border-white/20">
+            📍 Use my location
+          </button>
+        </div>
+      </header>
 
- </div>
+      <!-- Search Section -->
+      <section class="mb-8 relative max-w-2xl">
+        <div class="relative">
+          <input 
+            id="search-input" 
+            type="text" 
+            placeholder="Search for a city..." 
+            class="w-full px-6 py-4 text-lg bg-white/90 backdrop-blur-sm rounded-2xl border-0 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-xl placeholder-gray-500"
+          />
+          <div class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+            🔍
+          </div>
+        </div>
+        <ul id="suggestions" class="absolute z-20 w-full mt-2 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 hidden overflow-hidden"></ul>
+      </section>
+
+      <!-- Main Content -->
+      <main class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <!-- Current Weather & Forecast -->
+        <section class="xl:col-span-3 space-y-6">
+          <div id="current" class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 shadow-2xl">
+            <div class="text-white/70 text-center py-12">
+              <div class="text-6xl mb-4">🌤️</div>
+              <p class="text-xl">Search a city to see current weather</p>
+            </div>
+          </div>
+
+          <div id="forecast" class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 shadow-2xl">
+            <div class="text-white/70 text-center py-8">
+              <p class="text-lg">5-day forecast will appear here</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="space-y-6">
+          <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-6 border border-white/20 shadow-2xl">
+            <h2 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              ⭐ Favorites
+            </h2>
+            <ul id="favorites" class="space-y-3">
+              <li class="text-white/70 text-center py-4">No favorites yet</li>
+            </ul>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+  <script src="src/app.js"></script>
 </body>
 </html>
