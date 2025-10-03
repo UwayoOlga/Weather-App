@@ -37,38 +37,32 @@ function renderFavorites() {
   favoritesEl.innerHTML = '';
   
   if (favs.length === 0) {
-    favoritesEl.innerHTML = `
-      <li class="text-white/70 text-center py-8">
-        <div class="text-4xl mb-3">🌟</div>
-        <p class="font-light">No favorites yet</p>
-        <p class="text-sm text-white/50 mt-1">Save cities you love</p>
-      </li>
-    `;
+    favoritesEl.innerHTML = `<li class="text-gray-500 text-sm text-center py-2">No favorites yet</li>`;
     return;
   }
   
   favs.forEach((f, i) => {
     const li = document.createElement('li');
-    li.className = 'glass-card rounded-xl p-4 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group slide-in';
+    li.className = 'rounded-md border border-gray-200 bg-white p-3 hover:bg-gray-50 transition';
     li.style.animationDelay = `${i * 0.1}s`;
     
     const btn = document.createElement('button');
-    btn.className = 'text-left w-full group-hover:text-white/90 transition-colors duration-300';
+    btn.className = 'text-left w-full';
     btn.onclick = () => loadWeather(f.latitude, f.longitude, f.name);
     
     const nameDiv = document.createElement('div');
-    nameDiv.className = 'text-white font-semibold text-sm truncate mb-1';
+    nameDiv.className = 'text-gray-900 font-medium text-sm truncate mb-1';
     nameDiv.textContent = f.name;
     
     const coordsDiv = document.createElement('div');
-    coordsDiv.className = 'text-white/60 text-xs';
+    coordsDiv.className = 'text-gray-500 text-xs';
     coordsDiv.textContent = `${f.latitude.toFixed(2)}, ${f.longitude.toFixed(2)}`;
     
     btn.appendChild(nameDiv);
     btn.appendChild(coordsDiv);
     
     const rm = document.createElement('button');
-    rm.className = 'mt-3 px-3 py-1 bg-red-500/20 backdrop-blur-sm text-red-300 text-xs rounded-lg hover:bg-red-500/30 transition-all duration-300 border border-red-400/30';
+    rm.className = 'mt-2 px-3 py-1 bg-red-50 text-red-700 text-xs rounded-md hover:bg-red-100 transition border border-red-200';
     rm.textContent = '🗑️ Remove';
     rm.onclick = (e) => {
       e.stopPropagation();
@@ -107,14 +101,14 @@ function renderSuggestions(places) {
     return;
   }
   suggestionsEl.classList.remove('hidden');
-  suggestionsEl.classList.add('slide-in');
+  suggestionsEl.classList.add('');
   
   places.forEach((p, index) => {
     const li = document.createElement('li');
-    li.className = 'px-6 py-4 hover:bg-white/10 cursor-pointer transition-all duration-300 border-b border-white/10 last:border-b-0 group';
+    li.className = 'px-3 py-2 hover:bg-gray-50 cursor-pointer transition border-b border-gray-100 last:border-b-0';
     li.style.animationDelay = `${index * 0.1}s`;
-    li.style.opacity = '0';
-    li.style.transform = 'translateY(10px)';
+    li.style.opacity = '1';
+    li.style.transform = 'translateY(0)';
     
     const name = `${p.name}${p.admin1 ? ', ' + p.admin1 : ''}${p.country ? ', ' + p.country : ''}`;
     
@@ -125,27 +119,27 @@ function renderSuggestions(places) {
     left.className = 'flex-1 min-w-0';
     
     const nameSpan = document.createElement('div');
-    nameSpan.className = 'text-white font-semibold text-lg truncate group-hover:text-white/90 transition-colors duration-300';
+    nameSpan.className = 'text-gray-900 font-medium truncate';
     nameSpan.textContent = name;
     
     const coordsSpan = document.createElement('div');
-    coordsSpan.className = 'text-white/60 text-sm mt-1';
+    coordsSpan.className = 'text-gray-500 text-sm mt-1';
     coordsSpan.textContent = `${p.latitude.toFixed(2)}, ${p.longitude.toFixed(2)}`;
     
     left.appendChild(nameSpan);
     left.appendChild(coordsSpan);
     
     const addBtn = document.createElement('button');
-    addBtn.className = 'px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm rounded-xl hover:bg-white/30 transition-all duration-300 flex-shrink-0 ml-4 transform hover:scale-105 border border-white/20';
-    addBtn.textContent = '⭐ Save';
+    addBtn.className = 'px-3 py-1 bg-gray-900 text-white text-xs rounded-md hover:bg-black transition flex-shrink-0 ml-3';
+    addBtn.textContent = 'Save';
     addBtn.onclick = (e) => {
       e.stopPropagation();
       addFavorite({ name, latitude: p.latitude, longitude: p.longitude });
       addBtn.textContent = '✓ Saved';
-      addBtn.className = 'px-4 py-2 bg-green-500/30 backdrop-blur-sm text-white text-sm rounded-xl flex-shrink-0 ml-4 border border-green-400/50';
+      addBtn.className = 'px-3 py-1 bg-green-600 text-white text-xs rounded-md flex-shrink-0 ml-3';
       setTimeout(() => {
-        addBtn.textContent = '⭐ Save';
-        addBtn.className = 'px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm rounded-xl hover:bg-white/30 transition-all duration-300 flex-shrink-0 ml-4 transform hover:scale-105 border border-white/20';
+        addBtn.textContent = 'Save';
+        addBtn.className = 'px-3 py-1 bg-gray-900 text-white text-xs rounded-md hover:bg-black transition flex-shrink-0 ml-3';
       }, 2000);
     };
     
@@ -219,33 +213,29 @@ function codeToEmoji(code) {
 function renderCurrent(name, data) {
   const c = data.current;
   currentEl.innerHTML = `
-    <div class="flex items-center justify-between mb-12 slide-in">
+    <div class="flex items-center justify-between mb-6">
       <div>
-        <div class="text-4xl font-bold text-white mb-3 gradient-text">${name || 'Selected location'}</div>
-        <div class="text-white/80 text-lg font-light">${new Date(c.time).toLocaleString()}</div>
+        <div class="text-xl font-medium text-gray-900 mb-1">${name || 'Selected location'}</div>
+        <div class="text-gray-500 text-sm">${new Date(c.time).toLocaleString()}</div>
       </div>
-      <div class="text-9xl weather-icon floating-animation">${codeToEmoji(c.weather_code)}</div>
+      <div class="text-5xl">${codeToEmoji(c.weather_code)}</div>
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
-        <div class="text-white/70 text-sm mb-3 font-medium">Temperature</div>
-        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.temperature_2m}°C</div>
-        <div class="text-white/50 text-xs mt-2">Current</div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="rounded-md border border-gray-200 bg-white p-4">
+        <div class="text-gray-500 text-xs mb-1">Temperature</div>
+        <div class="text-2xl font-semibold text-gray-900">${c.temperature_2m}°C</div>
       </div>
-      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
-        <div class="text-white/70 text-sm mb-3 font-medium">Feels like</div>
-        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.apparent_temperature}°C</div>
-        <div class="text-white/50 text-xs mt-2">Perceived</div>
+      <div class="rounded-md border border-gray-200 bg-white p-4">
+        <div class="text-gray-500 text-xs mb-1">Feels like</div>
+        <div class="text-2xl font-semibold text-gray-900">${c.apparent_temperature}°C</div>
       </div>
-      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
-        <div class="text-white/70 text-sm mb-3 font-medium">Humidity</div>
-        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.relative_humidity_2m}%</div>
-        <div class="text-white/50 text-xs mt-2">Moisture</div>
+      <div class="rounded-md border border-gray-200 bg-white p-4">
+        <div class="text-gray-500 text-xs mb-1">Humidity</div>
+        <div class="text-2xl font-semibold text-gray-900">${c.relative_humidity_2m}%</div>
       </div>
-      <div class="glass-card rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group">
-        <div class="text-white/70 text-sm mb-3 font-medium">Wind</div>
-        <div class="text-4xl font-bold text-white group-hover:text-white/90 transition-colors duration-300">${c.wind_speed_10m} km/h</div>
-        <div class="text-white/50 text-xs mt-2">Speed</div>
+      <div class="rounded-md border border-gray-200 bg-white p-4">
+        <div class="text-gray-500 text-xs mb-1">Wind</div>
+        <div class="text-2xl font-semibold text-gray-900">${c.wind_speed_10m} km/h</div>
       </div>
     </div>
   `;
@@ -261,23 +251,19 @@ function renderForecast(data) {
     pop: d.precipitation_probability_max[i],
   }));
   forecastEl.innerHTML = `
-    <div class="flex items-center justify-between mb-8 slide-in">
-      <h2 class="text-3xl font-bold text-white gradient-text">5-Day Forecast</h2>
-      <div class="text-white/60 text-sm">Detailed outlook</div>
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-base font-medium text-gray-900">Next days</h2>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
       ${days
         .slice(0, 5)
         .map(
-          (x, index) => `
-        <div class="glass-card rounded-2xl p-6 text-center hover:bg-white/15 transition-all duration-300 transform hover:scale-105 group slide-in" style="animation-delay: ${index * 0.1}s">
-          <div class="text-white/70 text-sm mb-3 font-medium">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
-          <div class="text-5xl mb-4 weather-icon group-hover:scale-110 transition-transform duration-300">${codeToEmoji(x.code)}</div>
-          <div class="text-white font-bold text-lg mb-2">${Math.round(x.tmin)}° / ${Math.round(x.tmax)}°</div>
-          <div class="text-white/60 text-sm">${x.pop ?? 0}% chance</div>
-          <div class="mt-3 h-1 bg-white/20 rounded-full overflow-hidden">
-            <div class="h-full bg-gradient-to-r from-blue-400 to-purple-500 rounded-full" style="width: ${x.pop ?? 0}%"></div>
-          </div>
+          (x) => `
+        <div class="p-3 rounded border text-center bg-white">
+          <div class="text-sm text-gray-500">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
+          <div class="text-3xl">${codeToEmoji(x.code)}</div>
+          <div class="mt-1 text-sm text-gray-900">${Math.round(x.tmin)}° / ${Math.round(x.tmax)}°</div>
+          <div class="text-xs text-gray-500">POP ${x.pop ?? 0}%</div>
         </div>`
         )
         .join('')}
@@ -286,13 +272,7 @@ function renderForecast(data) {
 }
 
 async function loadWeather(lat, lon, name) {
-  currentEl.innerHTML = `
-    <div class="text-center py-16">
-      <div class="text-8xl mb-6 pulse-animation">🌪️</div>
-      <div class="text-white/80 text-2xl font-light mb-2">Loading weather data...</div>
-      <div class="text-white/60">Fetching the latest forecast</div>
-    </div>
-  `;
+  currentEl.innerHTML = '<div class="text-gray-500">Loading...</div>';
   forecastEl.innerHTML = '';
   try {
     const data = await fetchWeather(lat, lon);
@@ -300,13 +280,7 @@ async function loadWeather(lat, lon, name) {
     renderForecast(data);
   } catch (e) {
     console.error(e);
-    currentEl.innerHTML = `
-      <div class="text-center py-16">
-        <div class="text-8xl mb-6">❌</div>
-        <div class="text-red-300 text-2xl font-light mb-2">Failed to load weather data</div>
-        <div class="text-white/60">Please check your connection and try again</div>
-      </div>
-    `;
+    currentEl.innerHTML = '<div class="text-red-600">Failed to load weather.</div>';
   }
 }
 
