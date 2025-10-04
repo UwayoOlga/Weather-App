@@ -6,17 +6,17 @@
   <title>RwandaCast - Menya ikirere cyawe, buri munsi</title>
   <link href="src/output.css" rel="stylesheet">
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+<body class="min-h-screen bg-pink-50 dark:bg-black transition-colors duration-300">
   <div class="min-h-screen">
     <div class="mx-auto px-4 py-6 max-w-6xl">
       <!-- Header -->
       <header class="flex items-center justify-between mb-8">
         <div>
-          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">🇷🇼 Rwanda Weather</h1>
-          <p class="text-sm text-gray-500 dark:text-gray-300">Beautiful weather in the Land of a Thousand Hills</p>
+          <h1 class="text-2xl font-semibold text-pink-600 dark:text-pink-400">RwandaCast</h1>
+          <p class="text-sm text-pink-500 dark:text-pink-300">Menya ikirere cyawe, buri munsi</p>
         </div>
         <div class="flex items-center gap-2">
-          <button id="btn-locate" class="px-3 py-2 bg-gray-900 text-white rounded-md hover:bg-black transition">Use my location</button>
+          <button id="btn-locate" class="px-3 py-2 bg-gradient-to-r from-pink-600 to-blue-600 text-white rounded-md hover:from-pink-700 hover:to-blue-700 transition">Use my location</button>
         </div>
       </header>
 
@@ -42,8 +42,8 @@
             </div>
             <div class="absolute inset-0 bg-black bg-opacity-30"></div>
             <div class="absolute bottom-4 left-4 text-white">
-              <h3 class="text-xl font-semibold">🇷🇼 Beautiful Rwanda</h3>
-              <p class="text-sm opacity-90">Stunning landscapes from the Land of a Thousand Hills</p>
+              <h3 class="text-xl font-semibold">RwandaCast</h3>
+              <p class="text-sm opacity-90">Menya ikirere cyawe, buri munsi</p>
             </div>
             <div class="absolute bottom-4 right-4 flex space-x-2">
               <button id="prev-slide" class="bg-white bg-opacity-20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-opacity-30 transition">
@@ -61,21 +61,21 @@
       <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Current Weather & Forecast -->
         <section class="lg:col-span-2 space-y-6">
-          <div id="current" class="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-            <div class="text-gray-500 dark:text-gray-300">Search a city to see current weather.</div>
+          <div id="current" class="rounded-md border border-pink-200 dark:border-pink-800 bg-white dark:bg-black p-4">
+            <div class="text-pink-500 dark:text-pink-300">Search a city to see current weather.</div>
           </div>
 
-          <div id="forecast" class="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-            <div class="text-gray-500 dark:text-gray-300">Forecast will appear here.</div>
+          <div id="forecast" class="rounded-md border border-pink-200 dark:border-pink-800 bg-white dark:bg-black p-4">
+            <div class="text-pink-500 dark:text-pink-300">Forecast will appear here.</div>
           </div>
         </section>
 
         <!-- Sidebar -->
         <aside class="space-y-4">
-          <div class="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-            <h2 class="text-base font-medium text-gray-900 dark:text-white mb-2">Favorites</h2>
+          <div class="rounded-md border border-pink-200 dark:border-pink-800 bg-white dark:bg-black p-4">
+            <h2 class="text-base font-medium text-pink-600 dark:text-pink-400 mb-2">Favorites</h2>
             <ul id="favorites" class="space-y-2">
-              <li class="text-gray-500 dark:text-gray-300 text-sm text-center py-2">No favorites yet</li>
+              <li class="text-pink-500 dark:text-pink-300 text-sm text-center py-2">No favorites yet</li>
             </ul>
           </div>
         </aside>

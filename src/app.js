@@ -17,34 +17,14 @@ let isDark = false;
 let currentSlideIndex = 0;
 const weatherImages = [
   {
-    url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    title: 'Kigali Cityscape',
-    description: 'Beautiful view of Rwanda\'s capital city'
+    url: 'https://www.gorillatrips.net/wp-content/uploads/2020/11/best-time-to-visit-rwanda-banner.jpg',
+    title: 'Beautiful Rwanda',
+    description: 'Stunning landscapes from the Land of a Thousand Hills'
   },
   {
-    url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    title: 'Rwandan Highlands',
-    description: 'Misty hills and valleys of Rwanda'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    title: 'Lake Kivu',
-    description: 'Serene waters of Lake Kivu in western Rwanda'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    title: 'Volcanoes National Park',
-    description: 'Mountain gorillas habitat in northern Rwanda'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    title: 'Nyungwe Forest',
-    description: 'Ancient rainforest in southern Rwanda'
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    title: 'Akagera National Park',
-    description: 'Wildlife and savanna in eastern Rwanda'
+    url: 'https://aipc.org/wp-content/uploads/2020/08/Kigali-CC-2.jpg',
+    title: 'Kigali City',
+    description: 'Modern capital city of Rwanda'
   }
 ];
 
@@ -286,29 +266,29 @@ async function fetchWeather(lat, lon) {
 }
 
 function codeToEmoji(code) {
-  // Natural weather emojis for Rwanda
-  if ([0].includes(code)) return '☀️'; // Clear sky
-  if ([1, 2, 3].includes(code)) return '⛅'; // Partly cloudy
-  if ([45, 48].includes(code)) return '🌫️'; // Fog
-  if ([51, 53, 55].includes(code)) return '🌦️'; // Drizzle
-  if ([61, 63, 65].includes(code)) return '🌧️'; // Rain
-  if ([71, 73, 75].includes(code)) return '❄️'; // Snow
-  if ([77].includes(code)) return '🌨️'; // Snow grains
-  if ([80, 81, 82].includes(code)) return '🌦️'; // Rain showers
-  if ([85, 86].includes(code)) return '🌨️'; // Snow showers
-  if ([95, 96, 99].includes(code)) return '⛈️'; // Thunderstorm
-  return '🌤️'; // Default
+  // More descriptive and colorful weather icons for Rwanda
+  if ([0].includes(code)) return '☀️'; // Clear sky - bright sun
+  if ([1, 2, 3].includes(code)) return '⛅️'; // Partly cloudy - sun behind cloud
+  if ([45, 48].includes(code)) return '🌫️'; // Fog - foggy
+  if ([51, 53, 55].includes(code)) return '🌦️'; // Drizzle - sun and rain
+  if ([61, 63, 65].includes(code)) return '🌧️'; // Rain - rain cloud
+  if ([71, 73, 75].includes(code)) return '❄️'; // Snow - snowflake
+  if ([77].includes(code)) return '🌨️'; // Snow grains - snow cloud
+  if ([80, 81, 82].includes(code)) return '🌦️'; // Rain showers - sun and rain
+  if ([85, 86].includes(code)) return '🌨️'; // Snow showers - snow cloud
+  if ([95, 96, 99].includes(code)) return '⛈️'; // Thunderstorm - lightning
+  return '🌤️'; // Default - sun behind cloud
 }
 
 function renderCurrent(name, data) {
   const c = data.current;
-  const addToFavoritesBtn = `<button onclick="addFavorite({name: '${name}', latitude: ${data.latitude || 0}, longitude: ${data.longitude || 0}})" class="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition">⭐ Add to Favorites</button>`;
+  const addToFavoritesBtn = `<button onclick="addFavorite({name: '${name}', latitude: ${data.latitude || 0}, longitude: ${data.longitude || 0}})" class="px-3 py-1 bg-pink-600 text-white text-xs rounded-md hover:bg-pink-700 transition">⭐ Add to Favorites</button>`;
   
   currentEl.innerHTML = `
     <div class="flex items-center justify-between mb-6">
       <div>
-        <div class="text-xl font-medium text-gray-900 dark:text-white mb-1">${name || 'Selected location'}</div>
-        <div class="text-gray-500 dark:text-gray-300 text-sm">${new Date(c.time).toLocaleString()}</div>
+        <div class="text-xl font-medium text-pink-600 dark:text-pink-400 mb-1">${name || 'Selected location'}</div>
+        <div class="text-pink-500 dark:text-pink-300 text-sm">${new Date(c.time).toLocaleString()}</div>
       </div>
       <div class="flex items-center gap-3">
         <div class="text-5xl weather-icon">${codeToEmoji(c.weather_code)}</div>
@@ -316,21 +296,22 @@ function renderCurrent(name, data) {
       </div>
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="rounded-md border border-gray-200 dark:border-gray-600 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 hover:shadow-md transition-shadow">
-        <div class="text-blue-600 dark:text-blue-400 text-xs mb-1 font-medium">Temperature</div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-white">${c.temperature_2m}°C</div>
+      <div class="rounded-md border border-pink-200 dark:border-pink-800 bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-800/20 p-4 hover:shadow-md transition-shadow">
+        <div class="text-pink-600 dark:text-pink-400 text-xs mb-1 font-medium">Temperature</div>
+        <div class="text-2xl font-bold text-pink-700 dark:text-white">${c.temperature_2m}°C</div>
       </div>
-      <div class="rounded-md border border-gray-200 dark:border-gray-600 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-4 hover:shadow-md transition-shadow">
-        <div class="text-green-600 dark:text-green-400 text-xs mb-1 font-medium">Feels like</div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-white">${c.apparent_temperature}°C</div>
+      <div class="rounded-md border border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 hover:shadow-md transition-shadow">
+        <div class="text-blue-600 dark:text-blue-400 text-xs mb-1 font-medium">Feels like</div>
+        <div class="text-2xl font-bold text-blue-700 dark:text-white">${c.apparent_temperature}°C</div>
       </div>
-      <div class="rounded-md border border-gray-200 dark:border-gray-600 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 hover:shadow-md transition-shadow">
-        <div class="text-purple-600 dark:text-purple-400 text-xs mb-1 font-medium">Humidity</div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-white">${c.relative_humidity_2m}%</div>
+      <div class="rounded-md border border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-4 hover:shadow-md transition-shadow">
+        <div class="text-green-600 dark:text-green-400 text-xs mb-1 font-medium">Humidity</div>
+        <div class="text-2xl font-bold text-green-700 dark:text-white">${c.relative_humidity_2m}%</div>
       </div>
-      <div class="rounded-md border border-gray-200 dark:border-gray-600 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-4 hover:shadow-md transition-shadow">
-        <div class="text-orange-600 dark:text-orange-400 text-xs mb-1 font-medium">Wind</div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-white">${c.wind_speed_10m} km/h</div>
+      <div class="rounded-md border border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 hover:shadow-md transition-shadow">
+        <div class="text-purple-600 dark:text-purple-400 text-xs mb-1 font-medium">Wind</div>
+        <div class="text-2xl font-bold text-purple-700 dark:text-white">${c.wind_speed_10m} km/h</div>
+      </div>
       </div>
     </div>
   `;
@@ -347,20 +328,20 @@ function renderForecast(data) {
   }));
   forecastEl.innerHTML = `
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">5-Day Forecast</h2>
-      <div class="text-sm text-gray-500 dark:text-gray-300">Updated ${new Date().toLocaleTimeString()}</div>
+      <h2 class="text-lg font-semibold text-pink-600 dark:text-pink-400">5-Day Forecast</h2>
+      <div class="text-sm text-pink-500 dark:text-pink-300">Updated ${new Date().toLocaleTimeString()}</div>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
       ${days
         .slice(0, 5)
         .map(
           (x, index) => `
-        <div class="p-4 rounded-lg border border-gray-200 dark:border-gray-600 text-center bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 hover:shadow-md transition-all duration-300 hover:scale-105">
-          <div class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
+        <div class="p-4 rounded-lg border border-pink-200 dark:border-pink-800 text-center bg-gradient-to-br from-white to-pink-50 dark:from-black dark:to-pink-900/20 hover:shadow-md transition-all duration-300 hover:scale-105">
+          <div class="text-sm font-medium text-pink-600 dark:text-pink-300 mb-2">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
           <div class="text-4xl weather-icon mb-2">${codeToEmoji(x.code)}</div>
-          <div class="text-lg font-bold text-gray-900 dark:text-white mb-1">${Math.round(x.tmax)}°</div>
-          <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">${Math.round(x.tmin)}°</div>
-          <div class="text-xs text-blue-600 dark:text-blue-400 font-medium">${x.pop ?? 0}% chance of rain</div>
+          <div class="text-lg font-bold text-pink-700 dark:text-white mb-1">${Math.round(x.tmax)}°</div>
+          <div class="text-sm text-blue-600 dark:text-blue-300 mb-2">${Math.round(x.tmin)}°</div>
+          <div class="text-xs text-green-600 dark:text-green-400 font-medium">${x.pop ?? 0}% chance of rain</div>
         </div>`
         )
         .join('')}
