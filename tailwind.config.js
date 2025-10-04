@@ -5,6 +5,7 @@ module.exports = {
     "./index.html",
     "./src/assets/**/*.{svg,png,jpg,jpeg,gif}",
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       fontFamily: {
