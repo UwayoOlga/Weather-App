@@ -7,10 +7,75 @@ const currentEl = $('#current');
 const forecastEl = $('#forecast');
 const favoritesEl = $('#favorites');
 const locateBtn = $('#btn-locate');
+const slideshowContainer = $('#slideshow-container');
+const prevSlideBtn = $('#prev-slide');
+const nextSlideBtn = $('#next-slide');
 // simple dark mode
 let isDark = false;
 
+// Slideshow functionality
+let currentSlideIndex = 0;
+const weatherImages = [
+  {
+    url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    title: 'Sunny Kigali Morning',
+    description: 'Beautiful sunrise over the hills of Kigali'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    title: 'Misty Kigali Hills',
+    description: 'Mystical morning mist in the Rwandan highlands'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    title: 'Rainy Season in Kigali',
+    description: 'Tropical rain clouds gathering over the city'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    title: 'Clear Kigali Sky',
+    description: 'Crystal clear skies with perfect visibility'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    title: 'Golden Hour in Kigali',
+    description: 'Warm golden light during sunset hours'
+  }
+];
+
 const FAVORITES_KEY = 'weather:favorites';
+
+// Slideshow functions
+function renderSlide(index) {
+  const image = weatherImages[index];
+  slideshowContainer.innerHTML = `
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out" 
+         style="background-image: url('${image.url}')">
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+  `;
+}
+
+function nextSlide() {
+  currentSlideIndex = (currentSlideIndex + 1) % weatherImages.length;
+  renderSlide(currentSlideIndex);
+}
+
+function prevSlide() {
+  currentSlideIndex = (currentSlideIndex - 1 + weatherImages.length) % weatherImages.length;
+  renderSlide(currentSlideIndex);
+}
+
+function initSlideshow() {
+  renderSlide(0);
+  
+  // Auto-advance slideshow every 5 seconds
+  setInterval(nextSlide, 5000);
+  
+  // Add event listeners for navigation buttons
+  nextSlideBtn?.addEventListener('click', nextSlide);
+  prevSlideBtn?.addEventListener('click', prevSlide);
+}
 
 function debounce(fn, wait = 300) {
   let t;
@@ -101,14 +166,13 @@ function renderSuggestions(places) {
     return;
   }
   suggestionsEl.classList.remove('hidden');
-  suggestionsEl.classList.add('');
   
   places.forEach((p, index) => {
     const li = document.createElement('li');
     li.className = 'px-3 py-2 hover:bg-gray-50 cursor-pointer transition border-b border-gray-100 last:border-b-0';
     li.style.animationDelay = `${index * 0.1}s`;
-    li.style.opacity = '1';
-    li.style.transform = 'translateY(0)';
+    li.style.opacity = '0';
+    li.style.transform = 'translateY(-10px)';
     
     const name = `${p.name}${p.admin1 ? ', ' + p.admin1 : ''}${p.country ? ', ' + p.country : ''}`;
     
@@ -169,15 +233,32 @@ const handleSearch = debounce(async () => {
     suggestionsEl.classList.add('hidden');
     return;
   }
+  
+  // Show loading state
+  suggestionsEl.innerHTML = '<li class="px-3 py-2 text-gray-500 text-center">Searching...</li>';
+  suggestionsEl.classList.remove('hidden');
+  
   try {
     const places = await geocode(q);
     renderSuggestions(places);
   } catch (e) {
-    console.error(e);
+    console.error('Search error:', e);
+    suggestionsEl.innerHTML = '<li class="px-3 py-2 text-red-500 text-center">Search failed. Please try again.</li>';
   }
 }, 300);
 
 searchInput?.addEventListener('input', handleSearch);
+
+// Add keyboard navigation for search
+searchInput?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const firstSuggestion = suggestionsEl.querySelector('li');
+    if (firstSuggestion) {
+      firstSuggestion.click();
+    }
+  }
+});
+
 document.addEventListener('click', (e) => {
   if (!suggestionsEl.contains(e.target) && e.target !== searchInput) {
     suggestionsEl.classList.add('hidden');
@@ -200,42 +281,51 @@ async function fetchWeather(lat, lon) {
 }
 
 function codeToEmoji(code) {
-  // Minimal mapping for demo
-  if ([0].includes(code)) return '☀️';
-  if ([1, 2, 3].includes(code)) return '⛅';
-  if ([45, 48].includes(code)) return '🌫️';
-  if ([51, 53, 55, 61, 63, 65].includes(code)) return '🌧️';
-  if ([71, 73, 75].includes(code)) return '❄️';
-  if ([95, 96, 99].includes(code)) return '⛈️';
-  return '🌡️';
+  // Enhanced weather code mapping
+  if ([0].includes(code)) return '☀️'; // Clear sky
+  if ([1, 2, 3].includes(code)) return '⛅'; // Partly cloudy
+  if ([45, 48].includes(code)) return '🌫️'; // Fog
+  if ([51, 53, 55].includes(code)) return '🌦️'; // Drizzle
+  if ([61, 63, 65].includes(code)) return '🌧️'; // Rain
+  if ([71, 73, 75].includes(code)) return '❄️'; // Snow
+  if ([77].includes(code)) return '🌨️'; // Snow grains
+  if ([80, 81, 82].includes(code)) return '🌦️'; // Rain showers
+  if ([85, 86].includes(code)) return '🌨️'; // Snow showers
+  if ([95, 96, 99].includes(code)) return '⛈️'; // Thunderstorm
+  return '🌤️'; // Default
 }
 
 function renderCurrent(name, data) {
   const c = data.current;
+  const addToFavoritesBtn = `<button onclick="addFavorite({name: '${name}', latitude: ${data.latitude || 0}, longitude: ${data.longitude || 0}})" class="px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition">⭐ Add to Favorites</button>`;
+  
   currentEl.innerHTML = `
     <div class="flex items-center justify-between mb-6">
       <div>
         <div class="text-xl font-medium text-gray-900 mb-1">${name || 'Selected location'}</div>
         <div class="text-gray-500 text-sm">${new Date(c.time).toLocaleString()}</div>
       </div>
-      <div class="text-5xl">${codeToEmoji(c.weather_code)}</div>
+      <div class="flex items-center gap-3">
+        <div class="text-5xl weather-icon">${codeToEmoji(c.weather_code)}</div>
+        ${name !== 'Kigali, Rwanda' ? addToFavoritesBtn : ''}
+      </div>
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="rounded-md border border-gray-200 bg-white p-4">
-        <div class="text-gray-500 text-xs mb-1">Temperature</div>
-        <div class="text-2xl font-semibold text-gray-900">${c.temperature_2m}°C</div>
+      <div class="rounded-md border border-gray-200 bg-gradient-to-br from-blue-50 to-blue-100 p-4 hover:shadow-md transition-shadow">
+        <div class="text-blue-600 text-xs mb-1 font-medium">Temperature</div>
+        <div class="text-2xl font-bold text-gray-900">${c.temperature_2m}°C</div>
       </div>
-      <div class="rounded-md border border-gray-200 bg-white p-4">
-        <div class="text-gray-500 text-xs mb-1">Feels like</div>
-        <div class="text-2xl font-semibold text-gray-900">${c.apparent_temperature}°C</div>
+      <div class="rounded-md border border-gray-200 bg-gradient-to-br from-green-50 to-green-100 p-4 hover:shadow-md transition-shadow">
+        <div class="text-green-600 text-xs mb-1 font-medium">Feels like</div>
+        <div class="text-2xl font-bold text-gray-900">${c.apparent_temperature}°C</div>
       </div>
-      <div class="rounded-md border border-gray-200 bg-white p-4">
-        <div class="text-gray-500 text-xs mb-1">Humidity</div>
-        <div class="text-2xl font-semibold text-gray-900">${c.relative_humidity_2m}%</div>
+      <div class="rounded-md border border-gray-200 bg-gradient-to-br from-purple-50 to-purple-100 p-4 hover:shadow-md transition-shadow">
+        <div class="text-purple-600 text-xs mb-1 font-medium">Humidity</div>
+        <div class="text-2xl font-bold text-gray-900">${c.relative_humidity_2m}%</div>
       </div>
-      <div class="rounded-md border border-gray-200 bg-white p-4">
-        <div class="text-gray-500 text-xs mb-1">Wind</div>
-        <div class="text-2xl font-semibold text-gray-900">${c.wind_speed_10m} km/h</div>
+      <div class="rounded-md border border-gray-200 bg-gradient-to-br from-orange-50 to-orange-100 p-4 hover:shadow-md transition-shadow">
+        <div class="text-orange-600 text-xs mb-1 font-medium">Wind</div>
+        <div class="text-2xl font-bold text-gray-900">${c.wind_speed_10m} km/h</div>
       </div>
     </div>
   `;
@@ -251,19 +341,21 @@ function renderForecast(data) {
     pop: d.precipitation_probability_max[i],
   }));
   forecastEl.innerHTML = `
-    <div class="flex items-center justify-between mb-2">
-      <h2 class="text-base font-medium text-gray-900">Next days</h2>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-900">5-Day Forecast</h2>
+      <div class="text-sm text-gray-500">Updated ${new Date().toLocaleTimeString()}</div>
     </div>
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
       ${days
         .slice(0, 5)
         .map(
-          (x) => `
-        <div class="p-3 rounded border text-center bg-white">
-          <div class="text-sm text-gray-500">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
-          <div class="text-3xl">${codeToEmoji(x.code)}</div>
-          <div class="mt-1 text-sm text-gray-900">${Math.round(x.tmin)}° / ${Math.round(x.tmax)}°</div>
-          <div class="text-xs text-gray-500">POP ${x.pop ?? 0}%</div>
+          (x, index) => `
+        <div class="p-4 rounded-lg border border-gray-200 text-center bg-gradient-to-br from-white to-gray-50 hover:shadow-md transition-all duration-300 hover:scale-105">
+          <div class="text-sm font-medium text-gray-600 mb-2">${new Date(x.time).toLocaleDateString(undefined, { weekday: 'short' })}</div>
+          <div class="text-4xl weather-icon mb-2">${codeToEmoji(x.code)}</div>
+          <div class="text-lg font-bold text-gray-900 mb-1">${Math.round(x.tmax)}°</div>
+          <div class="text-sm text-gray-600 mb-2">${Math.round(x.tmin)}°</div>
+          <div class="text-xs text-blue-600 font-medium">${x.pop ?? 0}% chance of rain</div>
         </div>`
         )
         .join('')}
@@ -272,15 +364,32 @@ function renderForecast(data) {
 }
 
 async function loadWeather(lat, lon, name) {
-  currentEl.innerHTML = '<div class="text-gray-500">Loading...</div>';
+  currentEl.innerHTML = `
+    <div class="flex items-center justify-center py-8">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <div class="text-gray-500">Loading weather data...</div>
+      </div>
+    </div>
+  `;
   forecastEl.innerHTML = '';
+  
   try {
     const data = await fetchWeather(lat, lon);
     renderCurrent(name, data);
     renderForecast(data);
   } catch (e) {
-    console.error(e);
-    currentEl.innerHTML = '<div class="text-red-600">Failed to load weather.</div>';
+    console.error('Weather loading error:', e);
+    currentEl.innerHTML = `
+      <div class="text-center py-8">
+        <div class="text-red-500 text-4xl mb-4">⚠️</div>
+        <div class="text-red-600 font-medium mb-2">Failed to load weather data</div>
+        <div class="text-gray-500 text-sm">Please check your internet connection and try again</div>
+        <button onclick="loadWeather(${lat}, ${lon}, '${name}')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+          Try Again
+        </button>
+      </div>
+    `;
   }
 }
 
@@ -328,6 +437,9 @@ if (header) {
 
 // Default: load Kigali, Rwanda on first open
 window.addEventListener('DOMContentLoaded', () => {
+  // Initialize slideshow
+  initSlideshow();
+  
   // Kigali approx coordinates
   loadWeather(-1.95, 30.06, 'Kigali, Rwanda');
 });
