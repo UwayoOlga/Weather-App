@@ -1,3 +1,3 @@
-# Weather-App
-an application that fetches weather data from a public API (e.g., OpenWeatherMap) and displays it to the user.
-This involves handling asynchronous operations, parsing JSON data, and updating the DOM dynamically.
+This was my first project using an external API! It's a functional weather app that pulls real-time data 
+from OpenWeatherMap to help me practice working with asynchronous JavaScript, DOM manipulation, 
+and fetching data from a third-party service.
